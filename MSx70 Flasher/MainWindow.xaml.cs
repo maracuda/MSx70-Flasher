@@ -50,6 +50,7 @@ namespace MSx70_Flasher
 
         private void IdentifyDME_Click(object sender, RoutedEventArgs e)
         {
+            ErrrorsTextBox.Document.Blocks.Clear();
             UpdateProgressBar(0);
             IdentDME();
         }
@@ -1115,13 +1116,17 @@ namespace MSx70_Flasher
 
             catch (Exception ex2)
             {
+                this.Dispatcher.Invoke(() =>
+                {
+                    ErrrorsTextBox.AppendText("ResolveSgbdFile failed: " + EdiabasNet.GetExceptionText(ex2));
+                });
                 System.Diagnostics.Debug.WriteLine("ResolveSgbdFile failed: " + EdiabasNet.GetExceptionText(ex2));
             }
 
             return ediabas;
         }
 
-        private static void ProgressJobFunc(EdiabasNet ediabas)
+        private void ProgressJobFunc(EdiabasNet ediabas)
         {
             string infoProgressText = ediabas.InfoProgressText;
             int infoProgressPercent = ediabas.InfoProgressPercent;
@@ -1136,17 +1141,30 @@ namespace MSx70_Flasher
             }
             if (text.Length > 0)
             {
+                this.Dispatcher.Invoke(() =>
+                {
+                    ErrrorsTextBox.AppendText("Progress: " + text);
+                });
                 System.Diagnostics.Debug.WriteLine("Progress: " + text);
             }
         }
 
-        private static void ErrorRaisedFunc(EdiabasNet.ErrorCodes error)
+        private void ErrorRaisedFunc(EdiabasNet.ErrorCodes error)
         {
             string errorDescription = EdiabasNet.GetErrorDescription(error);
             System.Diagnostics.Debug.WriteLine("Error occured: 0x{0:X08} {1}", new object[]
             {
         (uint)error,
         errorDescription
+            });
+
+            this.Dispatcher.Invoke(() =>
+            {
+                ErrrorsTextBox.AppendText(string.Format("Error occured: 0x{0:X08} {1}", new object[]
+                {
+                    (uint)error,
+                    errorDescription
+                }));
             });
         }
 
@@ -1191,7 +1209,7 @@ namespace MSx70_Flasher
             return result;
         }
 
-        private static bool ExecuteJob(EdiabasNet ediabas, string Job, string Arg)
+        private bool ExecuteJob(EdiabasNet ediabas, string Job, string Arg)
         {
             ediabas.ArgString = Arg;
             try
@@ -1202,6 +1220,10 @@ namespace MSx70_Flasher
             {
                 if (ediabas.ErrorCodeLast == EdiabasNet.ErrorCodes.EDIABAS_ERR_NONE)
                 {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        ErrrorsTextBox.AppendText("Job execution failed: " + EdiabasNet.GetExceptionText(ex));
+                    });
                     System.Diagnostics.Debug.WriteLine("Job execution failed: " + EdiabasNet.GetExceptionText(ex));
                     System.Diagnostics.Debug.WriteLine("");
 
@@ -1211,7 +1233,7 @@ namespace MSx70_Flasher
             return (GetResult_String("JOB_STATUS", ediabas.ResultSets) == "OKAY");
         }
 
-        private static bool ExecuteJob(EdiabasNet ediabas, string Job, byte[] Arg)
+        private bool ExecuteJob(EdiabasNet ediabas, string Job, byte[] Arg)
         {
             ediabas.ArgBinary = Arg;
             try
@@ -1224,6 +1246,10 @@ namespace MSx70_Flasher
                 {
                     System.Diagnostics.Debug.WriteLine("Job execution failed: " + EdiabasNet.GetExceptionText(ex));
                     System.Diagnostics.Debug.WriteLine("");
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        ErrrorsTextBox.AppendText("Job execution failed: " + EdiabasNet.GetExceptionText(ex));
+                    });
                 }
                 return false;
             }

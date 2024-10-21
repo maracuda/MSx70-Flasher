@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MSx70_Flasher"
         mc:Ignorable="d"
-        Height="350" Width="580"
-        d:DesignHeight="350" d:DesignWidth="580"
+        Height="535" Width="586"
         ResizeMode="NoResize"
         Title="{x:Static local:Global.Title}"
         Opacity="1.0"
@@ -31,7 +30,7 @@
                     <MenuItem x:Name="RSA_Bypass_Fast" Header="Flash RSA Bypass" Click="FlashRSA_Bypass_Fast_Click" IsEnabled="False"/>
                 </MenuItem>
             </Menu>
-            <StackPanel></StackPanel>
+            <StackPanel Height="800"></StackPanel>
         </DockPanel>
 
 
@@ -48,6 +47,16 @@
             <Label x:Name="ZIF_Box" Content="" Margin="0,99,0,0" Background="#7FFFFFFF" Height="26" VerticalAlignment="Top" HorizontalAlignment="Right" Width="222"/>
             <Label x:Name="SWRef_Box" Content="" Margin="0,125,0,0" Background="#7FFFFFFF" Height="26" VerticalAlignment="Top" HorizontalAlignment="Right" Width="222"/>
             <Label x:Name="programStatus_Box" Content="" Margin="0,151,0,0" Background="#7FFFFFFF" Height="26" VerticalAlignment="Top" HorizontalAlignment="Right" Width="222"/>
+            <RichTextBox x:Name="ErrrorsTextBox" Margin="0,275,0,-325" RenderTransformOrigin="0.5,0.5">
+                <RichTextBox.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="0.135"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </RichTextBox.RenderTransform>
+            </RichTextBox>
         </Grid>
 
         <ProgressBar x:Name="ProgressDME" Margin="20,230,13,0" IsEnabled="False" Minimum="0" Maximum="500" Value="0" Height="36" ValueChanged="ProgressDME_ValueChanged" VerticalAlignment="Top" Foreground="#FF009ADA"/>
